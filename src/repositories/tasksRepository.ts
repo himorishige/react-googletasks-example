@@ -16,12 +16,15 @@ export type GetTasksParams = {
   taskListId: string;
 };
 
+export type CreateTaskParams = { taskListId: string } & Partial<Task>;
+
 interface TasksRepository {
   getTaskLists: (
     params?: GetTaskListsParams,
     token?: string,
   ) => Promise<TaskList[]>;
   getTasks: (params: GetTasksParams, token: string) => Promise<TaskList[]>;
+  createTask: (params: CreateTaskParams, token: string) => Promise<Task>;
 }
 
 export const tasksRepository: TasksRepository = {
@@ -52,5 +55,24 @@ export const tasksRepository: TasksRepository = {
       },
     );
     return response.data.items;
+  },
+
+  createTask: async (
+    params: CreateTaskParams,
+    token: string,
+  ): Promise<Task> => {
+    const response = await api.post<Task>(
+      `https://tasks.googleapis.com/tasks/v1/lists/${params.taskListId}/tasks`,
+      {
+        title: params.title,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json;charset=utf-8',
+        },
+      },
+    );
+    return response.data;
   },
 };
