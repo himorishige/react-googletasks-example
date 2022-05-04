@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import { BrowserRouter } from 'react-router-dom';
 
 import App from './App';
 import './index.css';
@@ -12,10 +13,12 @@ import { AuthGuard } from './providers/AuthGuard';
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <AuthGuard>
-      <QueryClientProvider client={queryClient}>
-        <App />
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
+      <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <App />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+      </BrowserRouter>
     </AuthGuard>
   </React.StrictMode>,
 );

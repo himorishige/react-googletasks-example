@@ -1,16 +1,16 @@
+import { Routes, Route } from 'react-router-dom';
+
 import './App.css';
-import { useApi } from './hooks/useApi';
-import { tasksRepository } from './repositories/tasksRepository';
+import { Home } from './components/pages/Home';
 
 function App() {
-  const { data: tasks } = useApi(
-    ['taskLists', { maxResults: 5 }],
-    async ({ maxResults }, token) =>
-      tasksRepository.getTaskLists({ maxResults }, token),
+  return (
+    <div className="App">
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </div>
   );
-  console.log(tasks);
-
-  return <div className="App">login</div>;
 }
 
 export default App;
