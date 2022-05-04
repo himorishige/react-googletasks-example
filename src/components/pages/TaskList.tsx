@@ -24,8 +24,9 @@ export const TaskList = () => {
     },
   });
 
-  const { mutate } = useMutateWrapper<Partial<Task>>(async (params, token) =>
-    tasksRepository.createTask({ ...params, taskListId }, token),
+  const { mutate } = useMutateWrapper<Partial<Task>, Task>(
+    async (params, token) =>
+      tasksRepository.createTask({ ...params, taskListId }, token),
   );
 
   type FormValues = typeof form.values;
