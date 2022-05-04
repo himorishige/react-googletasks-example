@@ -4,7 +4,7 @@ import { Routes, Route, Link } from 'react-router-dom';
 import { Home } from './components/pages/Home';
 import { TaskList } from './components/pages/TaskList';
 
-function App() {
+export const App = () => {
   return (
     <div className="App">
       <Title order={1}>
@@ -18,6 +18,4 @@ function App() {
       </Routes>
     </div>
   );
-}
-
-export default App;
+};

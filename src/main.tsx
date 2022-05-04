@@ -4,8 +4,7 @@ import { QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter } from 'react-router-dom';
 
-import App from './App';
-import './index.css';
+import { App } from './App';
 import { queryClient } from './libs/queryClient';
 import { AuthGuard } from './providers/AuthGuard';
 
