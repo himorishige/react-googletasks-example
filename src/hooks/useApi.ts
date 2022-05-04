@@ -1,8 +1,12 @@
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 
 import { useAuthGuardContext } from '../providers/AuthGuard';
 
-import type { UseQueryOptions } from 'react-query';
+import type {
+  UseQueryOptions,
+  UseMutationResult,
+  UseMutationOptions,
+} from 'react-query';
 
 export const useApi = <
   TQueryKey extends [string, Record<string, unknown>?],
@@ -26,4 +30,15 @@ export const useApi = <
     },
     ...options,
   });
+};
+
+export const useMutateWrapper = <T>(
+  fetcher: (params: T, token: string) => Promise<T>,
+  options?: UseMutationOptions<void, unknown, T, unknown>,
+): UseMutationResult<void, unknown, T, unknown> => {
+  const { accessToken } = useAuthGuardContext();
+
+  return useMutation(async (params: T) => {
+    await fetcher(params, accessToken || '');
+  }, options);
 };
