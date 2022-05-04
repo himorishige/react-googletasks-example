@@ -2,8 +2,8 @@ import { tasksRepository } from '../repositories/tasksRepository';
 import { useApi } from './useApi';
 
 export const useTasksApi = () => {
-  const useFetchTaskLists = () =>
-    useApi(['taskLists', { maxResults: 5 }], async ({ maxResults }, token) =>
+  const useFetchTaskLists = (maxResults?: number) =>
+    useApi(['taskLists', { maxResults }], async ({ maxResults }, token) =>
       tasksRepository.getTaskLists({ maxResults }, token),
     );
 
