@@ -28,16 +28,16 @@ export const useApi = <
   });
 };
 
-export const useMutateWrapper = <TVariables, TData>(
+export const useMutateWrapper = <TVariables, TData, TContext = TData>(
   fetcher: (params: TVariables, token: string) => Promise<TData>,
-  options?: UseMutationOptions<TData, unknown, TVariables, unknown>,
+  options?: UseMutationOptions<TData, unknown, TVariables, TContext>,
 ) => {
   const { accessToken } = useAuthGuardContext();
 
-  return useMutation(async (params: TVariables) => {
-    await fetcher(params, accessToken || ''),
-      {
-        ...options,
-      };
-  });
+  return useMutation(
+    async (params: TVariables) => {
+      return await fetcher(params, accessToken || '');
+    },
+    { ...options },
+  );
 };
