@@ -4,9 +4,9 @@ import { tasksRepository } from './repositories/tasksRepository';
 
 function App() {
   const { data: tasks } = useApi(
-    ['taskLists', { maxResult: 5 }],
-    async (params, token) =>
-      tasksRepository.getTaskLists({ maxResults: params.maxResult }, token),
+    ['taskLists', { maxResults: 5 }],
+    async ({ maxResults }, token) =>
+      tasksRepository.getTaskLists({ maxResults }, token),
   );
   console.log(tasks);
 
