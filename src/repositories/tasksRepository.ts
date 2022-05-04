@@ -16,6 +16,11 @@ export type GetTasksParams = {
   taskListId: string;
 };
 
+export type GetTaskParams = {
+  taskListId: string;
+  taskId: string;
+};
+
 export type CreateTaskParams = { taskListId: string } & Partial<Task>;
 
 interface TasksRepository {
@@ -24,6 +29,7 @@ interface TasksRepository {
     token?: string,
   ) => Promise<TaskList[]>;
   getTasks: (params: GetTasksParams, token: string) => Promise<TaskList[]>;
+  getTask: (params: GetTaskParams, token: string) => Promise<Task>;
   createTask: (params: CreateTaskParams, token: string) => Promise<Task[]>;
 }
 
@@ -55,6 +61,19 @@ export const tasksRepository: TasksRepository = {
       },
     );
     return response.data.items;
+  },
+
+  getTask: async (params: GetTaskParams, token: string): Promise<Task> => {
+    const response = await api.get<Task>(
+      `https://tasks.googleapis.com/tasks/v1/lists/${params.taskListId}/tasks/${params.taskId}`,
+      {
+        ...params,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
   },
 
   createTask: async (
