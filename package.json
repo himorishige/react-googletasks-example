@@ -9,12 +9,15 @@
     "lint": "eslint src --max-warnings=0"
   },
   "dependencies": {
+    "@mantine/core": "^4.2.2",
+    "@mantine/hooks": "^4.2.2",
     "axios": "^0.27.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-google-login": "^5.2.2",
     "react-query": "^4.0.0-beta.7",
-    "react-router-dom": "^6.3.0"
+    "react-router-dom": "^6.3.0",
+    "tabler-icons-react": "^1.47.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",
