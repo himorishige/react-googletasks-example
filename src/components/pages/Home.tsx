@@ -1,17 +1,12 @@
 import { List, Title, Loader } from '@mantine/core';
 import { Link } from 'react-router-dom';
 
-import { useApi } from '../../hooks/useApi';
-import { tasksRepository } from '../../repositories/tasksRepository';
+import { useTasksApi } from '../../hooks/useTasks';
 
 export const Home = () => {
-  const {
-    data: taskLists,
-    isLoading,
-    isError,
-  } = useApi(['taskLists', { maxResults: 5 }], async ({ maxResults }, token) =>
-    tasksRepository.getTaskLists({ maxResults }, token),
-  );
+  const { useFetchTaskLists } = useTasksApi();
+
+  const { data: taskLists, isLoading, isError } = useFetchTaskLists();
 
   if (isLoading) return <Loader />;
   if (isError) return <div>Error</div>;

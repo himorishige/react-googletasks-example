@@ -2,23 +2,15 @@ import { Loader, Text, Title } from '@mantine/core';
 import { useParams } from 'react-router-dom';
 import invariant from 'tiny-invariant';
 
-import { useApi } from '../../hooks/useApi';
-import { tasksRepository } from '../../repositories/tasksRepository';
+import { useTasksApi } from '../../hooks/useTasks';
 
 export const TaskDetail = () => {
   const { taskListId, taskId } = useParams();
   invariant(taskListId, 'taskListId is required');
   invariant(taskId, 'taskId is required');
 
-  const {
-    data: task,
-    isLoading,
-    isError,
-  } = useApi(
-    ['task', { taskListId, taskId }],
-    async (params, token) => tasksRepository.getTask(params, token),
-    { enabled: !!taskId && !!taskListId },
-  );
+  const { useFetchTasks } = useTasksApi();
+  const { data: task, isLoading, isError } = useFetchTasks(taskListId, taskId);
 
   if (isLoading) return <Loader />;
   if (isError) return <div>Error</div>;

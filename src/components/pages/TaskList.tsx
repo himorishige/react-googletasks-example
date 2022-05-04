@@ -1,10 +1,11 @@
 import { Button, List, Loader, TextInput, Title } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useQueryClient } from 'react-query';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import invariant from 'tiny-invariant';
 
-import { useApi, useMutateWrapper } from '../../hooks/useApi';
+import { useMutateWrapper } from '../../hooks/useApi';
+import { useTasksApi } from '../../hooks/useTasks';
 import { tasksRepository } from '../../repositories/tasksRepository';
 
 import type { Task } from '../../types/tasks';
@@ -45,10 +46,11 @@ export const TaskList = () => {
 
         return previousTasks;
       },
-      onError: (error, variables, context) => {
+      onError: (error, _, context) => {
         if (context && context.length > 0) {
           queryClient.setQueryData<Task[]>(['tasks', { taskListId }], context);
         }
+        console.log(error);
       },
       onSettled: () => {
         queryClient.invalidateQueries(['tasks', { taskListId }]);
@@ -61,16 +63,8 @@ export const TaskList = () => {
     createTask.mutate({ title: values.title });
   };
 
-  const {
-    data: tasks,
-    isLoading,
-    isError,
-  } = useApi(
-    ['tasks', { taskListId }],
-    async ({ taskListId }, token) =>
-      tasksRepository.getTasks({ taskListId }, token),
-    { enabled: !!taskListId },
-  );
+  const { useFetchTaskList } = useTasksApi();
+  const { data: tasks, isLoading, isError } = useFetchTaskList(taskListId);
 
   if (isLoading) return <Loader />;
   if (isError) return <div>Error</div>;
@@ -82,7 +76,9 @@ export const TaskList = () => {
       <List>
         {tasks &&
           tasks.map((task) => (
-            <List.Item key={task.id}>{task.title}</List.Item>
+            <List.Item key={task.id}>
+              <Link to={`${task.id}`}>{task.title}</Link>
+            </List.Item>
           ))}
       </List>
 
