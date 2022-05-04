@@ -24,7 +24,7 @@ interface TasksRepository {
     token?: string,
   ) => Promise<TaskList[]>;
   getTasks: (params: GetTasksParams, token: string) => Promise<TaskList[]>;
-  createTask: (params: CreateTaskParams, token: string) => Promise<Task>;
+  createTask: (params: CreateTaskParams, token: string) => Promise<Task[]>;
 }
 
 export const tasksRepository: TasksRepository = {
@@ -60,7 +60,10 @@ export const tasksRepository: TasksRepository = {
   createTask: async (
     params: CreateTaskParams,
     token: string,
-  ): Promise<Task> => {
+  ): Promise<Task[]> => {
+    // for optimistic ui sample
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
     const response = await api.post<Task>(
       `https://tasks.googleapis.com/tasks/v1/lists/${params.taskListId}/tasks`,
       {
@@ -73,6 +76,6 @@ export const tasksRepository: TasksRepository = {
         },
       },
     );
-    return response.data;
+    return [response.data];
   },
 };
