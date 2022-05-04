@@ -24,21 +24,41 @@ export const TaskList = () => {
     },
   });
 
-  const { mutate } = useMutateWrapper<Partial<Task>, Task>(
+  const createTask = useMutateWrapper<Partial<Task>, Task[]>(
     async (params, token) =>
       tasksRepository.createTask({ ...params, taskListId }, token),
+    {
+      onMutate: async (params) => {
+        await queryClient.cancelQueries(['tasks', { taskListId }]);
+
+        const previousTasks = queryClient.getQueryData<Task[]>([
+          'tasks',
+          { taskListId },
+        ]);
+
+        if (previousTasks) {
+          queryClient.setQueryData<Partial<Task>[]>(
+            ['tasks', { taskListId }],
+            [{ title: params.title }, ...previousTasks],
+          );
+        }
+
+        return previousTasks;
+      },
+      onError: (error, variables, context) => {
+        if (context && context.length > 0) {
+          queryClient.setQueryData<Task[]>(['tasks', { taskListId }], context);
+        }
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries(['tasks', { taskListId }]);
+      },
+    },
   );
 
   type FormValues = typeof form.values;
   const submitHandler = (values: FormValues) => {
-    mutate(
-      { title: values.title },
-      {
-        onSuccess: () =>
-          queryClient.invalidateQueries(['tasks', { taskListId }]),
-        onSettled: () => form.reset(),
-      },
-    );
+    createTask.mutate({ title: values.title });
   };
 
   const {
