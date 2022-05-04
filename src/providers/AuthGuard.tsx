@@ -59,6 +59,7 @@ export const AuthGuard: React.FC<Props> = ({ children }) => {
         onFailure={responseGoogleError}
         scope="https://www.googleapis.com/auth/tasks"
         cookiePolicy={'single_host_origin'}
+        isSignedIn={true}
       />
     );
 
