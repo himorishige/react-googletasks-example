@@ -32,5 +32,21 @@ export const useTasksApi = () => {
       (oldData, newData) => [newData, ...oldData],
     );
 
-  return { useFetchTaskLists, useFetchTaskList, useFetchTasks, useAddTask };
+  const useDeleteTask = (taskListId: string) =>
+    useOptimisticMutation<{ taskId: string }, { taskId: string }, Task[]>(
+      ['tasks', { taskListId }],
+      async (params, token) =>
+        tasksRepository.deleteTask({ ...params, taskListId }, token),
+      (oldData, params) => [
+        ...oldData.filter(({ id }) => id !== params.taskId),
+      ],
+    );
+
+  return {
+    useFetchTaskLists,
+    useFetchTaskList,
+    useFetchTasks,
+    useAddTask,
+    useDeleteTask,
+  };
 };
