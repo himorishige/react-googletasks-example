@@ -89,3 +89,28 @@ export const useGenericMutation = <TVariables, TData, TContext>(
     { ...options },
   );
 };
+
+export const usePrefetch = <
+  TQueryKey extends [string, Record<string, unknown>?],
+  TQueryFnData,
+  TError,
+  TData = TQueryFnData,
+>(
+  queryKey: TQueryKey,
+  fetcher: (params: TQueryKey[1], token: string) => Promise<TQueryFnData>,
+) => {
+  const { accessToken } = useAuthGuardContext();
+
+  const queryClient = useQueryClient();
+
+  return () => {
+    if (!queryKey[0]) {
+      return;
+    }
+
+    queryClient.prefetchQuery<TQueryFnData, TError, TData, TQueryKey>(
+      queryKey,
+      ({ queryKey }) => fetcher(queryKey[1], accessToken || ''),
+    );
+  };
+};
