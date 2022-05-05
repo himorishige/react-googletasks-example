@@ -23,7 +23,7 @@ export type Task = {
   parent: string;
   position: string;
   notes: string;
-  status: string;
+  status: 'needsAction' | 'completed';
   due: string;
   completed: string;
   deleted: boolean;
