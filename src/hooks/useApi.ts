@@ -30,13 +30,16 @@ export const useApi = <
 
 export const useOptimisticMutation = <TVariables, TData, TContext>(
   queryKey: [string, Record<string, unknown>?],
-  fetcher: (params: TVariables, token: string) => Promise<TData>,
+  fetcher: (params: TVariables, token: string) => Promise<TData | void>,
   updater?: ((oldData: TContext, newData: TData) => TContext) | undefined,
-  options?: UseMutationOptions<
-    TData,
-    unknown,
-    TVariables | TData | TContext,
-    unknown
+  options?: Omit<
+    UseMutationOptions<
+      TData | void,
+      unknown,
+      TVariables | TData | TContext,
+      unknown
+    >,
+    'onMutate' | 'onError' | 'onSettled'
   >,
 ) => {
   const { accessToken } = useAuthGuardContext();
