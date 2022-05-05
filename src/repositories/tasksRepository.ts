@@ -33,7 +33,7 @@ interface TasksRepository {
     params?: GetTaskListsParams,
     token?: string,
   ) => Promise<TaskList[]>;
-  getTasks: (params: GetTasksParams, token: string) => Promise<TaskList[]>;
+  getTasks: (params: GetTasksParams, token: string) => Promise<Task[]>;
   getTask: (params: GetTaskParams, token: string) => Promise<Task>;
   createTask: (params: CreateTaskParams, token: string) => Promise<Task>;
   deleteTask: (params: DeleteTaskParams, token: string) => Promise<void>;
