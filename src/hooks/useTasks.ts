@@ -1,5 +1,5 @@
 import { tasksRepository } from '../repositories/tasksRepository';
-import { useApi, useOptimisticMutation } from './useApi';
+import { useApi, useOptimisticMutation, usePrefetch } from './useApi';
 
 import type { Task } from '../types/tasks';
 
@@ -42,11 +42,17 @@ export const useTasksApi = () => {
       ],
     );
 
+  const usePrefetchTask = (taskListId: string, taskId: string) =>
+    usePrefetch(['task', { taskListId, taskId }], async (params, token) =>
+      tasksRepository.getTask(params, token),
+    );
+
   return {
     useFetchTaskLists,
     useFetchTaskList,
     useFetchTasks,
     useAddTask,
     useDeleteTask,
+    usePrefetchTask,
   };
 };
