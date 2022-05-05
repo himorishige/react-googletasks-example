@@ -23,6 +23,11 @@ export type GetTaskParams = {
 
 export type CreateTaskParams = { taskListId: string } & Partial<Task>;
 
+export type DeleteTaskParams = {
+  taskListId: string;
+  taskId: string;
+};
+
 interface TasksRepository {
   getTaskLists: (
     params?: GetTaskListsParams,
@@ -31,6 +36,7 @@ interface TasksRepository {
   getTasks: (params: GetTasksParams, token: string) => Promise<TaskList[]>;
   getTask: (params: GetTaskParams, token: string) => Promise<Task>;
   createTask: (params: CreateTaskParams, token: string) => Promise<Task>;
+  deleteTask: (params: DeleteTaskParams, token: string) => Promise<void>;
 }
 
 export const tasksRepository: TasksRepository = {
@@ -81,7 +87,7 @@ export const tasksRepository: TasksRepository = {
     token: string,
   ): Promise<Task> => {
     // for optimistic ui sample
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const response = await api.post<Task>(
       `https://tasks.googleapis.com/tasks/v1/lists/${params.taskListId}/tasks`,
@@ -96,5 +102,23 @@ export const tasksRepository: TasksRepository = {
       },
     );
     return response.data;
+  },
+
+  deleteTask: async (
+    params: DeleteTaskParams,
+    token: string,
+  ): Promise<void> => {
+    // for optimistic ui sample
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    await api.delete<Task>(
+      `https://tasks.googleapis.com/tasks/v1/lists/${params.taskListId}/tasks/${params.taskId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json;charset=utf-8',
+        },
+      },
+    );
   },
 };
