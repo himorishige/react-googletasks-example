@@ -1,10 +1,14 @@
 import { Button, List, Loader, TextInput, Title } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { useCallback } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { TrashX } from 'tabler-icons-react';
 import invariant from 'tiny-invariant';
 
 import { useTasksApi } from '../../hooks/useTasks';
+
+import type { Task } from '../../types/tasks';
+import type { FC } from 'react';
 
 export const TaskList = () => {
   const { taskListId } = useParams();
@@ -21,7 +25,8 @@ export const TaskList = () => {
 
   type FormValues = typeof form.values;
 
-  const { useFetchTaskList, useAddTask, useDeleteTask } = useTasksApi();
+  const { useFetchTaskList, useAddTask, useDeleteTask, usePrefetchTask } =
+    useTasksApi();
 
   const { data: tasks, isLoading, isError } = useFetchTaskList(taskListId);
 
@@ -45,13 +50,16 @@ export const TaskList = () => {
 
   const deleteTask = useDeleteTask(taskListId);
 
-  const deleteHandler = async (taskId: string) => {
-    try {
-      await deleteTask.mutateAsync({ taskId });
-    } catch (e) {
-      console.warn(e);
-    }
-  };
+  const deleteHandler = useCallback(
+    async (taskId: string) => {
+      try {
+        await deleteTask.mutateAsync({ taskId });
+      } catch (e) {
+        console.warn(e);
+      }
+    },
+    [deleteTask],
+  );
 
   if (isLoading) return <Loader />;
   if (isError) return <div>Error</div>;
@@ -63,16 +71,15 @@ export const TaskList = () => {
       <List>
         {tasks &&
           tasks.map((task) => (
-            <List.Item key={task.id}>
-              <Link to={`${task.id}`}>{task.title}</Link>
-              <Button
-                compact
-                onClick={() => deleteHandler(task.id)}
-                disabled={deleteTask.isLoading || createTask.isLoading}
-              >
-                <TrashX size={12} />
-              </Button>
-            </List.Item>
+            <TaskItem
+              key={task.id}
+              taskListId={taskListId}
+              task={task}
+              deleteHandler={deleteHandler}
+              isDeleting={deleteTask.isLoading}
+              isCreating={createTask.isLoading}
+              usePrefetchTask={usePrefetchTask}
+            />
           ))}
       </List>
 
@@ -83,5 +90,45 @@ export const TaskList = () => {
         </Button>
       </form>
     </div>
+  );
+};
+
+type TaskItemProps = {
+  taskListId: string;
+  task: Pick<Task, 'id' | 'title'>;
+  deleteHandler: (taskId: string) => Promise<void>;
+  isDeleting: boolean;
+  isCreating: boolean;
+  usePrefetchTask: (taskListId: string, taskId: string) => () => void;
+};
+
+const TaskItem: FC<TaskItemProps> = ({
+  taskListId,
+  task,
+  deleteHandler,
+  isCreating,
+  isDeleting,
+  usePrefetchTask,
+}) => {
+  const prefetchTask = usePrefetchTask(taskListId, task.id);
+
+  const prefetchHandler = () => {
+    prefetchTask();
+  };
+
+  return (
+    <List.Item key={task.id}>
+      <Link to={`${task.id}`}>{task.title}</Link>
+      <Button
+        compact
+        onClick={() => deleteHandler(task.id)}
+        disabled={isCreating || isDeleting}
+      >
+        <TrashX size={12} />
+      </Button>
+      <Button compact onClick={prefetchHandler}>
+        Prefetch
+      </Button>
+    </List.Item>
   );
 };
