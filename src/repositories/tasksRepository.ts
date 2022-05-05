@@ -30,7 +30,7 @@ interface TasksRepository {
   ) => Promise<TaskList[]>;
   getTasks: (params: GetTasksParams, token: string) => Promise<TaskList[]>;
   getTask: (params: GetTaskParams, token: string) => Promise<Task>;
-  createTask: (params: CreateTaskParams, token: string) => Promise<Task[]>;
+  createTask: (params: CreateTaskParams, token: string) => Promise<Task>;
 }
 
 export const tasksRepository: TasksRepository = {
@@ -79,7 +79,7 @@ export const tasksRepository: TasksRepository = {
   createTask: async (
     params: CreateTaskParams,
     token: string,
-  ): Promise<Task[]> => {
+  ): Promise<Task> => {
     // for optimistic ui sample
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
@@ -95,6 +95,6 @@ export const tasksRepository: TasksRepository = {
         },
       },
     );
-    return [response.data];
+    return response.data;
   },
 };
