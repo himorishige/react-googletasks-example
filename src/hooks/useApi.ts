@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 import { useAuthGuardContext } from '../providers/AuthGuard';
 
@@ -28,7 +28,52 @@ export const useApi = <
   });
 };
 
-export const useMutateWrapper = <TVariables, TData, TContext = TData>(
+export const useOptimisticMutation = <TVariables, TData, TContext>(
+  queryKey: [string, Record<string, unknown>?],
+  fetcher: (params: TVariables, token: string) => Promise<TData>,
+  updater?: ((oldData: TContext, newData: TData) => TContext) | undefined,
+  options?: UseMutationOptions<
+    TData,
+    unknown,
+    TVariables | TData | TContext,
+    unknown
+  >,
+) => {
+  const { accessToken } = useAuthGuardContext();
+
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    async (params) => {
+      return await fetcher(params as TVariables, accessToken || '');
+    },
+    {
+      onMutate: async (data) => {
+        await queryClient.cancelQueries(queryKey);
+
+        const previousData = queryClient.getQueryData<TContext>(queryKey);
+
+        queryClient.setQueryData<TContext>(queryKey, (oldData) => {
+          return updater && oldData
+            ? updater(oldData, data as TData)
+            : (data as TContext);
+        });
+
+        return previousData;
+      },
+      onError: (err, _, context) => {
+        queryClient.setQueryData(queryKey, context);
+        console.warn(err);
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries(queryKey);
+      },
+      ...options,
+    },
+  );
+};
+
+export const useGenericMutation = <TVariables, TData, TContext>(
   fetcher: (params: TVariables, token: string) => Promise<TData>,
   options?: UseMutationOptions<TData, unknown, TVariables, TContext>,
 ) => {
