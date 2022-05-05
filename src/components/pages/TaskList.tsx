@@ -68,7 +68,7 @@ export const TaskList = () => {
               <Button
                 compact
                 onClick={() => deleteHandler(task.id)}
-                disabled={deleteTask.isLoading}
+                disabled={deleteTask.isLoading || createTask.isLoading}
               >
                 <TrashX size={12} />
               </Button>
