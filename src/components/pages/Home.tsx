@@ -1,9 +1,11 @@
-import { List, Title, Loader } from '@mantine/core';
-import { Link } from 'react-router-dom';
+import { Loader, Container, Button, Group, Stack, Box } from '@mantine/core';
+import { Link, Outlet, useParams } from 'react-router-dom';
 
 import { useTasksApi } from '../../hooks/useTasks';
 
 export const Home = () => {
+  const { taskListId } = useParams();
+
   const { useFetchTaskLists } = useTasksApi();
 
   const { data: taskLists, isLoading, isError } = useFetchTaskLists();
@@ -12,17 +14,26 @@ export const Home = () => {
   if (isError) return <div>Error</div>;
 
   return (
-    <div>
-      <Title order={2}>Home</Title>
+    <Container p={16}>
+      <Stack>
+        <Group direction="row">
+          {taskLists &&
+            taskLists.map((taskList) => (
+              <Button
+                key={taskList.id}
+                component={Link}
+                to={`lists/${taskList.id}/tasks`}
+                variant={taskList.id === taskListId ? 'filled' : 'light'}
+              >
+                {taskList.title}
+              </Button>
+            ))}
+        </Group>
 
-      <List>
-        {taskLists &&
-          taskLists.map((taskList) => (
-            <List.Item key={taskList.id}>
-              <Link to={`lists/${taskList.id}/tasks`}>{taskList.title}</Link>
-            </List.Item>
-          ))}
-      </List>
-    </div>
+        <Box>
+          <Outlet />
+        </Box>
+      </Stack>
+    </Container>
   );
 };
