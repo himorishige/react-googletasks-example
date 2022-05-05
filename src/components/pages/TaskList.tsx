@@ -29,10 +29,15 @@ export const TaskList = () => {
 
   const submitHandler = async (values: FormValues) => {
     try {
-      await createTask.mutateAsync({
-        id: Math.random().toString(),
-        title: values.title,
-      });
+      await createTask.mutateAsync(
+        {
+          id: Math.random().toString(),
+          title: values.title,
+        },
+        {
+          onSuccess: () => form.reset(),
+        },
+      );
     } catch (e) {
       console.warn(e);
     }
@@ -60,7 +65,11 @@ export const TaskList = () => {
           tasks.map((task) => (
             <List.Item key={task.id}>
               <Link to={`${task.id}`}>{task.title}</Link>
-              <Button compact onClick={() => deleteHandler(task.id)}>
+              <Button
+                compact
+                onClick={() => deleteHandler(task.id)}
+                disabled={deleteTask.isLoading}
+              >
                 <TrashX size={12} />
               </Button>
             </List.Item>
@@ -69,7 +78,9 @@ export const TaskList = () => {
 
       <form onSubmit={form.onSubmit((values) => submitHandler(values))}>
         <TextInput required label="title" {...form.getInputProps('title')} />
-        <Button type="submit">Add task</Button>
+        <Button type="submit" disabled={createTask.isLoading}>
+          Add task
+        </Button>
       </form>
     </div>
   );
