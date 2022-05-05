@@ -1,5 +1,7 @@
 import { tasksRepository } from '../repositories/tasksRepository';
-import { useApi } from './useApi';
+import { useApi, useOptimisticMutation } from './useApi';
+
+import type { Task } from '../types/tasks';
 
 export const useTasksApi = () => {
   const useFetchTaskLists = (maxResults?: number) =>
@@ -22,5 +24,13 @@ export const useTasksApi = () => {
       { enabled: !!taskId && !!taskListId },
     );
 
-  return { useFetchTaskLists, useFetchTaskList, useFetchTasks };
+  const useAddTask = (taskListId: string) =>
+    useOptimisticMutation<Partial<Task>, Task, Task[]>(
+      ['tasks', { taskListId }],
+      async (params, token) =>
+        tasksRepository.createTask({ ...params, taskListId }, token),
+      (oldData, newData) => [newData, ...oldData],
+    );
+
+  return { useFetchTaskLists, useFetchTaskList, useFetchTasks, useAddTask };
 };
