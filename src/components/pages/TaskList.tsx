@@ -1,6 +1,7 @@
 import { Button, List, Loader, TextInput, Title } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { Link, useParams } from 'react-router-dom';
+import { TrashX } from 'tabler-icons-react';
 import invariant from 'tiny-invariant';
 
 import { useTasksApi } from '../../hooks/useTasks';
@@ -20,7 +21,7 @@ export const TaskList = () => {
 
   type FormValues = typeof form.values;
 
-  const { useFetchTaskList, useAddTask } = useTasksApi();
+  const { useFetchTaskList, useAddTask, useDeleteTask } = useTasksApi();
 
   const { data: tasks, isLoading, isError } = useFetchTaskList(taskListId);
 
@@ -32,6 +33,16 @@ export const TaskList = () => {
         id: Math.random().toString(),
         title: values.title,
       });
+    } catch (e) {
+      console.warn(e);
+    }
+  };
+
+  const deleteTask = useDeleteTask(taskListId);
+
+  const deleteHandler = async (taskId: string) => {
+    try {
+      await deleteTask.mutateAsync({ taskId });
     } catch (e) {
       console.warn(e);
     }
@@ -49,6 +60,9 @@ export const TaskList = () => {
           tasks.map((task) => (
             <List.Item key={task.id}>
               <Link to={`${task.id}`}>{task.title}</Link>
+              <Button compact onClick={() => deleteHandler(task.id)}>
+                <TrashX size={12} />
+              </Button>
             </List.Item>
           ))}
       </List>
