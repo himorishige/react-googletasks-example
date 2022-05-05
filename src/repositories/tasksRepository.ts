@@ -21,7 +21,14 @@ export type GetTaskParams = {
   taskId: string;
 };
 
-export type CreateTaskParams = { taskListId: string } & Partial<Task>;
+export type CreateTaskParams = {
+  taskListId: string;
+} & Partial<Task>;
+
+export type UpdateTaskParams = {
+  taskListId: string;
+  taskId: string;
+} & Partial<Task>;
 
 export type DeleteTaskParams = {
   taskListId: string;
@@ -36,6 +43,7 @@ interface TasksRepository {
   getTasks: (params: GetTasksParams, token: string) => Promise<Task[]>;
   getTask: (params: GetTaskParams, token: string) => Promise<Task>;
   createTask: (params: CreateTaskParams, token: string) => Promise<Task>;
+  updateTask: (params: UpdateTaskParams, token: string) => Promise<Task>;
   deleteTask: (params: DeleteTaskParams, token: string) => Promise<void>;
 }
 
@@ -58,7 +66,7 @@ export const tasksRepository: TasksRepository = {
 
   getTasks: async (params: GetTasksParams, token: string): Promise<Task[]> => {
     const response = await api.get<TasksResponse>(
-      `https://tasks.googleapis.com/tasks/v1/lists/${params.taskListId}/tasks`,
+      `https://tasks.googleapis.com/tasks/v1/lists/${params.taskListId}/tasks?showCompleted=true&showHidden=true&showDeleted=true`,
       {
         ...params,
         headers: {
@@ -93,6 +101,30 @@ export const tasksRepository: TasksRepository = {
       `https://tasks.googleapis.com/tasks/v1/lists/${params.taskListId}/tasks`,
       {
         title: params.title,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json;charset=utf-8',
+        },
+      },
+    );
+    return response.data;
+  },
+
+  updateTask: async (
+    params: UpdateTaskParams,
+    token: string,
+  ): Promise<Task> => {
+    // for optimistic ui sample
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    const { taskListId, taskId, ...rest } = params;
+
+    const response = await api.patch<Task>(
+      `https://tasks.googleapis.com/tasks/v1/lists/${taskListId}/tasks/${taskId}`,
+      {
+        ...rest,
       },
       {
         headers: {
