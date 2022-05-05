@@ -32,6 +32,14 @@ export const useTasksApi = () => {
       (oldData, newData) => [newData, ...oldData],
     );
 
+  const useUpdateTask = (taskListId: string) =>
+    useOptimisticMutation<{ taskId: string } & Partial<Task>, Task, Task[]>(
+      ['tasks', { taskListId }],
+      async (params, token) =>
+        tasksRepository.updateTask({ ...params, taskListId }, token),
+      (oldData) => [...oldData],
+    );
+
   const useDeleteTask = (taskListId: string) =>
     useOptimisticMutation<{ taskId: string }, { taskId: string }, Task[]>(
       ['tasks', { taskListId }],
@@ -52,6 +60,7 @@ export const useTasksApi = () => {
     useFetchTaskList,
     useFetchTasks,
     useAddTask,
+    useUpdateTask,
     useDeleteTask,
     usePrefetchTask,
   };
