@@ -1,4 +1,4 @@
-import { Loader, Container, Button, Group, Stack, Box } from '@mantine/core';
+import { Container, Button, Group, Stack, Box } from '@mantine/core';
 import { Link, Outlet, useParams } from 'react-router-dom';
 
 import { useTasksApi } from '../../hooks/useTasks';
@@ -8,10 +8,7 @@ export const Home = () => {
 
   const { useFetchTaskLists } = useTasksApi();
 
-  const { data: taskLists, isLoading, isError } = useFetchTaskLists();
-
-  if (isLoading) return <Loader />;
-  if (isError) return <div>Error</div>;
+  const { data: taskLists } = useFetchTaskLists();
 
   return (
     <Container p={16}>

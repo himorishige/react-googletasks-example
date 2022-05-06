@@ -25,7 +25,20 @@ export const App = () => {
         </Container>
       </Header>
       <Routes>
-        <Route path="/" element={<Home />}>
+        <Route
+          path="/"
+          element={
+            <Suspense
+              fallback={
+                <Container p={16}>
+                  <Loader />
+                </Container>
+              }
+            >
+              <Home />
+            </Suspense>
+          }
+        >
           <Route
             path="lists/:taskListId/tasks"
             element={

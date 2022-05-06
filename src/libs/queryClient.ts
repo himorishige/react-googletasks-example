@@ -11,7 +11,6 @@ function queryErrorHandler(error: unknown): void {
 
   // some toast message
   showNotification({
-    id,
     title: id,
     message: title,
     autoClose: 3000,
@@ -30,6 +29,8 @@ export function generateQueryClient(): QueryClient {
         refetchOnMount: false,
         refetchOnReconnect: false,
         refetchOnWindowFocus: false,
+        suspense: true, // suspense mode
+        useErrorBoundary: false, // unused error boundary
       },
       mutations: {
         onError: queryErrorHandler,

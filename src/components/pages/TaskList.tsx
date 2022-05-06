@@ -1,4 +1,4 @@
-import { Button, Grid, Loader, Stack, TextInput } from '@mantine/core';
+import { Button, Grid, Stack, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useCallback } from 'react';
 import { useParams } from 'react-router-dom';
@@ -33,7 +33,7 @@ export const TaskList = () => {
     usePrefetchTask,
   } = useTasksApi();
 
-  const { data: tasks, isLoading, isError } = useFetchTaskList(taskListId);
+  const { data: tasks } = useFetchTaskList(taskListId);
 
   const createTask = useAddTask(taskListId);
 
@@ -78,9 +78,6 @@ export const TaskList = () => {
     },
     [deleteTask],
   );
-
-  if (isLoading) return <Loader />;
-  if (isError) return <div>Error</div>;
 
   return (
     <>
