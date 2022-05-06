@@ -1,5 +1,6 @@
 import { Button, Grid, Stack, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { showNotification } from '@mantine/notifications';
 import { useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { SquarePlus } from 'tabler-icons-react';
@@ -48,8 +49,18 @@ export const TaskList = () => {
           onSuccess: () => form.reset(),
         },
       );
-    } catch (e) {
-      console.warn(e);
+    } catch (error) {
+      console.warn(error);
+
+      const message =
+        error instanceof Error ? error.message : 'error connecting to server';
+
+      showNotification({
+        title: `Cannot add the task: ${values.title}`,
+        message,
+        autoClose: 3000,
+        color: 'red',
+      });
     }
   };
 
@@ -59,8 +70,18 @@ export const TaskList = () => {
     async (params: Task) => {
       try {
         await updateTask.mutateAsync({ ...params });
-      } catch (e) {
-        console.warn(e);
+      } catch (error) {
+        console.warn(error);
+
+        const message =
+          error instanceof Error ? error.message : 'error connecting to server';
+
+        showNotification({
+          title: `Cannot complete the task: ${params.title}`,
+          message,
+          autoClose: 3000,
+          color: 'red',
+        });
       }
     },
     [updateTask],
@@ -72,8 +93,18 @@ export const TaskList = () => {
     async (taskId: string) => {
       try {
         await deleteTask.mutateAsync({ id: taskId });
-      } catch (e) {
-        console.warn(e);
+      } catch (error) {
+        console.warn(error);
+
+        const message =
+          error instanceof Error ? error.message : 'error connecting to server';
+
+        showNotification({
+          title: `Cannot delete the task: ${taskId}`,
+          message,
+          autoClose: 3000,
+          color: 'red',
+        });
       }
     },
     [deleteTask],
