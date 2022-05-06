@@ -56,9 +56,9 @@ export const TaskList = () => {
   const updateTask = useUpdateTask(taskListId);
 
   const completeHandler = useCallback(
-    async (taskId: string, params: Partial<Task>) => {
+    async (params: Task) => {
       try {
-        await updateTask.mutateAsync({ taskId, ...params });
+        await updateTask.mutateAsync({ ...params });
       } catch (e) {
         console.warn(e);
       }
@@ -71,7 +71,7 @@ export const TaskList = () => {
   const deleteHandler = useCallback(
     async (taskId: string) => {
       try {
-        await deleteTask.mutateAsync({ taskId });
+        await deleteTask.mutateAsync({ id: taskId });
       } catch (e) {
         console.warn(e);
       }

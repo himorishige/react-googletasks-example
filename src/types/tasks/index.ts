@@ -14,21 +14,21 @@ export type TaskListsResponse = {
 };
 
 export type Task = {
-  kind: string;
+  kind?: string;
   id: string;
-  etag: string;
+  etag?: string;
   title: string;
-  updated: string;
-  selfLink: string;
-  parent: string;
-  position: string;
-  notes: string;
-  status: 'needsAction' | 'completed';
-  due: string;
-  completed: string;
-  deleted: boolean;
-  hidden: boolean;
-  links: Link[];
+  updated?: string;
+  selfLink?: string;
+  parent?: string;
+  position?: string;
+  notes?: string;
+  status?: 'needsAction' | 'completed';
+  due?: string;
+  completed?: string;
+  deleted?: boolean;
+  hidden?: boolean;
+  links?: Link[];
 };
 
 type Link = {

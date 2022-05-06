@@ -10,7 +10,7 @@ type Props = {
   taskListId: string;
   task: Pick<Task, 'id' | 'title' | 'status'>;
   deleteHandler: (taskId: string) => Promise<void>;
-  completeHandler: (taskId: string, params: Partial<Task>) => Promise<void>;
+  completeHandler: (params: Task) => Promise<void>;
   isDeleting: boolean;
   isCreating: boolean;
   usePrefetchTask: (taskListId: string, taskId: string) => () => void;
@@ -44,7 +44,9 @@ export const TaskListItem: FC<Props> = ({
           <Checkbox
             defaultChecked={task.status === 'completed' ? true : false}
             onChange={() =>
-              completeHandler(task.id, {
+              completeHandler({
+                id: task.id,
+                title: task.title,
                 status:
                   task.status === 'completed' ? 'needsAction' : 'completed',
               })

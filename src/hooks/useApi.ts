@@ -31,14 +31,9 @@ export const useApi = <
 export const useOptimisticMutation = <TVariables, TData, TContext>(
   queryKey: [string, Record<string, unknown>?],
   fetcher: (params: TVariables, token: string) => Promise<TData | void>,
-  updater?: ((oldData: TContext, newData: TData) => TContext) | undefined,
+  updater?: ((oldData: TContext, newData: TVariables) => TContext) | undefined,
   options?: Omit<
-    UseMutationOptions<
-      TData | void,
-      unknown,
-      TVariables | TData | TContext,
-      unknown
-    >,
+    UseMutationOptions<TData | void, unknown, TVariables, TContext>,
     'onMutate' | 'onError' | 'onSettled'
   >,
 ) => {
@@ -48,7 +43,7 @@ export const useOptimisticMutation = <TVariables, TData, TContext>(
 
   return useMutation(
     async (params) => {
-      return await fetcher(params as TVariables, accessToken || '');
+      return await fetcher(params, accessToken || '');
     },
     {
       onMutate: async (data) => {
@@ -56,11 +51,13 @@ export const useOptimisticMutation = <TVariables, TData, TContext>(
 
         const previousData = queryClient.getQueryData<TContext>(queryKey);
 
-        queryClient.setQueryData<TContext>(queryKey, (oldData) => {
-          return updater && oldData
-            ? updater(oldData, data as TData)
-            : (data as TContext);
-        });
+        if (previousData && updater) {
+          queryClient.setQueryData<TContext>(queryKey, () => {
+            return updater(previousData, data);
+          });
+          // updaterなしの場合を検討
+          // queryClient.setQueryData(queryKey, data);
+        }
 
         return previousData;
       },

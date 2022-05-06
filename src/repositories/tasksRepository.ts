@@ -27,7 +27,6 @@ export type CreateTaskParams = {
 
 export type UpdateTaskParams = {
   taskListId: string;
-  taskId: string;
 } & Partial<Task>;
 
 export type DeleteTaskParams = {
@@ -119,10 +118,10 @@ export const tasksRepository: TasksRepository = {
     // for optimistic ui sample
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    const { taskListId, taskId, ...rest } = params;
+    const { taskListId, id, ...rest } = params;
 
     const response = await api.patch<Task>(
-      `https://tasks.googleapis.com/tasks/v1/lists/${taskListId}/tasks/${taskId}`,
+      `https://tasks.googleapis.com/tasks/v1/lists/${taskListId}/tasks/${id}`,
       {
         ...rest,
       },

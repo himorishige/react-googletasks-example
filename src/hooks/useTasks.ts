@@ -29,7 +29,7 @@ export const useTasksApi = () => {
     );
 
   const useAddTask = (taskListId: string) =>
-    useOptimisticMutation<Partial<Task>, Task, Task[]>(
+    useOptimisticMutation<Task, Task, Task[]>(
       ['tasks', { taskListId }],
       async (params, token) =>
         tasksRepository.createTask({ ...params, taskListId }, token),
@@ -37,21 +37,18 @@ export const useTasksApi = () => {
     );
 
   const useUpdateTask = (taskListId: string) =>
-    useOptimisticMutation<{ taskId: string } & Partial<Task>, Task, Task[]>(
+    useOptimisticMutation<Task, Task, Task[]>(
       ['tasks', { taskListId }],
       async (params, token) =>
         tasksRepository.updateTask({ ...params, taskListId }, token),
-      (oldData) => [...oldData],
     );
 
   const useDeleteTask = (taskListId: string) =>
-    useOptimisticMutation<{ taskId: string }, { taskId: string }, Task[]>(
+    useOptimisticMutation<Pick<Task, 'id'>, void, Task[]>(
       ['tasks', { taskListId }],
-      async (params, token) =>
-        tasksRepository.deleteTask({ ...params, taskListId }, token),
-      (oldData, params) => [
-        ...oldData.filter(({ id }) => id !== params.taskId),
-      ],
+      async ({ id }, token) =>
+        tasksRepository.deleteTask({ taskListId, taskId: id }, token),
+      (oldData, params) => [...oldData.filter(({ id }) => id !== params.id)],
     );
 
   const usePrefetchTask = (taskListId: string, taskId: string) =>
