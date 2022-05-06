@@ -1,5 +1,5 @@
 import { ActionIcon, Checkbox, Grid, Group, Paper, Text } from '@mantine/core';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { TrashX } from 'tabler-icons-react';
 
@@ -25,6 +25,7 @@ export const TaskListItem: FC<Props> = ({
   isDeleting,
   usePrefetchTask,
 }) => {
+  const [isChecked, setIsChecked] = useState(task.status === 'completed');
   const prefetched = useRef<boolean>();
   const prefetchTask = usePrefetchTask(taskListId, task.id);
 
@@ -42,15 +43,15 @@ export const TaskListItem: FC<Props> = ({
       <Grid grow justify="space-between" align="center">
         <Grid.Col span={1}>
           <Checkbox
-            defaultChecked={task.status === 'completed' ? true : false}
-            onChange={() =>
+            defaultChecked={isChecked}
+            onChange={() => {
               completeHandler({
                 id: task.id,
                 title: task.title,
-                status:
-                  task.status === 'completed' ? 'needsAction' : 'completed',
-              })
-            }
+                status: isChecked ? 'needsAction' : 'completed',
+              });
+              setIsChecked(!isChecked);
+            }}
           />
         </Grid.Col>
         <Grid.Col span={10}>
