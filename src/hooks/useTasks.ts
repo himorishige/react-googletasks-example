@@ -14,14 +14,18 @@ export const useTasksApi = () => {
       ['tasks', { taskListId }],
       async ({ taskListId }, token) =>
         tasksRepository.getTasks({ taskListId }, token),
-      { enabled: !!taskListId },
+      {
+        enabled: !!taskListId,
+      },
     );
 
-  const useFetchTasks = (taskListId: string, taskId: string) =>
+  const useFetchTask = (taskListId: string, taskId: string) =>
     useApi(
       ['task', { taskListId, taskId }],
       async (params, token) => tasksRepository.getTask(params, token),
-      { enabled: !!taskId && !!taskListId },
+      {
+        enabled: !!taskId && !!taskListId,
+      },
     );
 
   const useAddTask = (taskListId: string) =>
@@ -58,7 +62,7 @@ export const useTasksApi = () => {
   return {
     useFetchTaskLists,
     useFetchTaskList,
-    useFetchTasks,
+    useFetchTask,
     useAddTask,
     useUpdateTask,
     useDeleteTask,
