@@ -41,6 +41,17 @@ export const useTasksApi = () => {
       ['tasks', { taskListId }],
       async (params, token) =>
         tasksRepository.updateTask({ ...params, taskListId }, token),
+      (oldData, params) => {
+        return [
+          ...oldData.map((task) => {
+            if (task.id === params.id) {
+              return { ...task, ...params };
+            } else {
+              return task;
+            }
+          }),
+        ];
+      },
     );
 
   const useDeleteTask = (taskListId: string) =>
