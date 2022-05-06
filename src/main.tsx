@@ -1,3 +1,4 @@
+import { NotificationsProvider } from '@mantine/notifications';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { QueryClientProvider } from 'react-query';
@@ -12,12 +13,14 @@ import { AuthGuard } from './providers/AuthGuard';
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <AuthGuard>
-      <BrowserRouter>
-        <QueryClientProvider client={queryClient}>
-          <App />
-          <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
-      </BrowserRouter>
+      <NotificationsProvider>
+        <BrowserRouter>
+          <QueryClientProvider client={queryClient}>
+            <App />
+            <ReactQueryDevtools initialIsOpen={false} />
+          </QueryClientProvider>
+        </BrowserRouter>
+      </NotificationsProvider>
     </AuthGuard>
   </React.StrictMode>,
 );
