@@ -1,9 +1,20 @@
-import { Container, Title, Header } from '@mantine/core';
+import { Container, Title, Header, Loader } from '@mantine/core';
+import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 import { Home } from './components/pages/Home';
-import { TaskDetail } from './components/pages/TaskDetail';
-import { TaskList } from './components/pages/TaskList';
+
+const TaskList = lazy(() =>
+  import('./components/pages/TaskList').then((module) => ({
+    default: module.TaskList,
+  })),
+);
+
+const TaskDetail = lazy(() =>
+  import('./components/pages/TaskDetail').then((module) => ({
+    default: module.TaskDetail,
+  })),
+);
 
 export const App = () => {
   return (
@@ -15,10 +26,21 @@ export const App = () => {
       </Header>
       <Routes>
         <Route path="/" element={<Home />}>
-          <Route path="lists/:taskListId/tasks" element={<TaskList />} />
+          <Route
+            path="lists/:taskListId/tasks"
+            element={
+              <Suspense fallback={<Loader />}>
+                <TaskList />
+              </Suspense>
+            }
+          />
           <Route
             path="lists/:taskListId/tasks/:taskId"
-            element={<TaskDetail />}
+            element={
+              <Suspense fallback={<Loader />}>
+                <TaskDetail />
+              </Suspense>
+            }
           />
         </Route>
       </Routes>
