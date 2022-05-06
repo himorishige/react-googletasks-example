@@ -1,4 +1,4 @@
-import React from 'react';
+import { createContext, useContext, useState } from 'react';
 import GoogleLogin from 'react-google-login';
 
 import type {
@@ -6,24 +6,24 @@ import type {
   GoogleLoginResponseOffline,
 } from 'react-google-login';
 
-export type AuthGuardProps = {
+export type AuthGuardContext = {
   accessToken: string | null;
   signOut: () => void;
 };
 
-const AuthGuardContext = React.createContext<AuthGuardProps>(
-  {} as AuthGuardProps,
+const AuthGuardContext = createContext<AuthGuardContext>(
+  {} as AuthGuardContext,
 );
 
-export const useAuthGuardContext = (): AuthGuardProps =>
-  React.useContext<AuthGuardProps>(AuthGuardContext);
+export const useAuthGuardContext = (): AuthGuardContext =>
+  useContext<AuthGuardContext>(AuthGuardContext);
 
 type Props = {
   children: React.ReactNode;
 };
 
 export const AuthGuard: React.FC<Props> = ({ children }) => {
-  const [accessToken, setAccessToken] = React.useState<string | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
 
   const signIn = (accessToken: string) => {
     setAccessToken(accessToken);
@@ -36,8 +36,6 @@ export const AuthGuard: React.FC<Props> = ({ children }) => {
   const responseGoogle = (
     response: GoogleLoginResponse | GoogleLoginResponseOffline,
   ) => {
-    console.log(response);
-
     // TODO offline
     if ('code' in response) {
       console.log(response.code);
@@ -48,7 +46,7 @@ export const AuthGuard: React.FC<Props> = ({ children }) => {
   };
 
   const responseGoogleError = (response: unknown) => {
-    console.log(response);
+    console.warn(response);
   };
 
   if (!accessToken)
