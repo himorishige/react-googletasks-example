@@ -1,4 +1,4 @@
-import { Loader, Text, Title } from '@mantine/core';
+import { Divider, Loader, Paper, Text, Title } from '@mantine/core';
 import { useParams } from 'react-router-dom';
 import invariant from 'tiny-invariant';
 
@@ -16,9 +16,15 @@ export const TaskDetail = () => {
   if (isError) return <div>Error</div>;
 
   return (
-    <div>
-      <Title order={2}>TaskDetail {taskId}</Title>
-      <Text>{task.title}</Text>
-    </div>
+    <Paper>
+      <Title order={2} pb={8}>
+        {task.title}
+      </Title>
+      <Divider py={8} />
+      <Text>状態：{task.status}</Text>
+      {task.updated && (
+        <Text>更新日：{new Date(task.updated).toLocaleString()}</Text>
+      )}
+    </Paper>
   );
 };
