@@ -9,8 +9,8 @@ export const TaskDetail = () => {
   invariant(taskListId, 'taskListId is required');
   invariant(taskId, 'taskId is required');
 
-  const { useFetchTasks } = useTasksApi();
-  const { data: task, isLoading, isError } = useFetchTasks(taskListId, taskId);
+  const { useFetchTask } = useTasksApi();
+  const { data: task, isLoading, isError } = useFetchTask(taskListId, taskId);
 
   if (isLoading) return <Loader />;
   if (isError) return <div>Error</div>;
