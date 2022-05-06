@@ -28,7 +28,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <AuthGuard>
-        <NotificationsProvider>
+        <NotificationsProvider limit={5}>
           <BrowserRouter>
             <QueryClientProvider client={queryClient}>
               <App />
