@@ -74,8 +74,8 @@ export const useOptimisticMutation = <TVariables, TData, TContext>(
 };
 
 export const useGenericMutation = <TVariables, TData, TContext>(
-  fetcher: (params: TVariables, token: string) => Promise<TData>,
-  options?: UseMutationOptions<TData, unknown, TVariables, TContext>,
+  fetcher: (params: TVariables, token: string) => Promise<TData | void>,
+  options?: UseMutationOptions<TData | void, unknown, TVariables, TContext>,
 ) => {
   const { accessToken } = useAuthGuardContext();
 
