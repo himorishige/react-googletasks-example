@@ -11,7 +11,6 @@ type Props = {
   task: Pick<Task, 'id' | 'title' | 'status'>;
   deleteHandler: (taskId: string) => Promise<void>;
   completeHandler: (params: Task) => Promise<void>;
-  isDeleting: boolean;
   isCreating: boolean;
   usePrefetchTask: (taskListId: string, taskId: string) => () => void;
 };
@@ -22,7 +21,6 @@ export const TaskListItem: FC<Props> = ({
   deleteHandler,
   completeHandler,
   isCreating,
-  isDeleting,
   usePrefetchTask,
 }) => {
   const [isChecked, setIsChecked] = useState(task.status === 'completed');
@@ -64,7 +62,7 @@ export const TaskListItem: FC<Props> = ({
             <ActionIcon
               title="delete"
               onClick={() => deleteHandler(task.id)}
-              loading={isDeleting || isCreating}
+              loading={isCreating}
               color="red"
               variant="light"
             >

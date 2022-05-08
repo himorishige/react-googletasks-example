@@ -122,7 +122,6 @@ export const TaskList = () => {
                 task={task}
                 deleteHandler={deleteHandler}
                 completeHandler={completeHandler}
-                isDeleting={deleteTask.isLoading}
                 isCreating={createTask.isLoading}
                 usePrefetchTask={usePrefetchTask}
               />
