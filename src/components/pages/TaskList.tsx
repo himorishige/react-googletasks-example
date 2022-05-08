@@ -114,7 +114,7 @@ export const TaskList = () => {
     <>
       <Stack>
         <Stack spacing="sm">
-          {tasks &&
+          {!!tasks &&
             tasks.map((task) => (
               <TaskListItem
                 key={task.id}

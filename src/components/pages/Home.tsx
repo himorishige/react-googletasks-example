@@ -14,7 +14,7 @@ export const Home = () => {
     <Container p={16}>
       <Stack>
         <Group direction="row">
-          {taskLists &&
+          {!!taskLists &&
             taskLists.map((taskList) => (
               <Button
                 key={taskList.id}
