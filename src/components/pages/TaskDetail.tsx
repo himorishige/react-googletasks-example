@@ -15,10 +15,10 @@ export const TaskDetail = () => {
   return (
     <Paper>
       <Title order={2} pb={8}>
-        {task?.title}
+        {task?.title || 'No title'}
       </Title>
       <Divider py={8} />
-      <Text>状態：{task?.status}</Text>
+      <Text>状態：{task?.status || 'No status'}</Text>
       {task?.updated && (
         <Text>更新日：{new Date(task.updated).toLocaleString()}</Text>
       )}
