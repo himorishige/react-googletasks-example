@@ -62,7 +62,7 @@ export const TaskListItem: FC<Props> = ({
             <ActionIcon
               title="delete"
               onClick={() => deleteHandler(task.id)}
-              loading={isCreating}
+              disabled={isCreating}
               color="red"
               variant="light"
             >
