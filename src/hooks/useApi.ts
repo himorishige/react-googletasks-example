@@ -7,23 +7,23 @@ import type { UseQueryOptions, UseMutationOptions } from 'react-query';
 export const useApi = <
   TQueryKey extends [string, Record<string, unknown>?],
   TQueryFnData,
-  TError = unknown,
+  TError,
   TData = TQueryFnData,
 >(
   queryKey: TQueryKey,
   fetcher: (params: TQueryKey[1], token: string) => Promise<TQueryFnData>,
   options?: Omit<
-    UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
+    UseQueryOptions<unknown, TError, TData, TQueryKey>,
     'queryKey' | 'queryFn'
   >,
 ) => {
   const { accessToken } = useAuthGuardContext();
 
-  return useQuery(
+  return useQuery({
     queryKey,
-    async () => fetcher(queryKey[1], accessToken || ''),
-    options,
-  );
+    queryFn: async () => fetcher(queryKey[1], accessToken || ''),
+    ...options,
+  });
 };
 
 export const useOptimisticMutation = <TVariables, TData, TContext>(
@@ -94,7 +94,7 @@ export const usePrefetch = <
   queryKey: TQueryKey,
   fetcher: (params: TQueryKey[1], token: string) => Promise<TQueryFnData>,
   options?: Omit<
-    UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
+    UseQueryOptions<unknown, TError, TData, TQueryKey>,
     'queryKey' | 'queryFn'
   >,
 ) => {
@@ -107,10 +107,10 @@ export const usePrefetch = <
       return;
     }
 
-    queryClient.prefetchQuery(
+    queryClient.prefetchQuery({
       queryKey,
-      ({ queryKey }) => fetcher(queryKey[1], accessToken || ''),
-      options,
-    );
+      queryFn: async () => fetcher(queryKey[1], accessToken || ''),
+      ...options,
+    });
   };
 };
