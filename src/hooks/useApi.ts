@@ -13,7 +13,7 @@ export const useApi = <
   queryKey: TQueryKey,
   fetcher: (params: TQueryKey[1], token: string) => Promise<TQueryFnData>,
   options?: Omit<
-    UseQueryOptions<unknown, TError, TData, TQueryKey>,
+    UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
     'queryKey' | 'queryFn'
   >,
 ) => {
@@ -94,7 +94,7 @@ export const usePrefetch = <
   queryKey: TQueryKey,
   fetcher: (params: TQueryKey[1], token: string) => Promise<TQueryFnData>,
   options?: Omit<
-    UseQueryOptions<unknown, TError, TData, TQueryKey>,
+    UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
     'queryKey' | 'queryFn'
   >,
 ) => {
