@@ -54,7 +54,9 @@ export const tasksRepository: TasksRepository = {
     const response = await api.get<TaskListsResponse>(
       'https://tasks.googleapis.com/tasks/v1/users/@me/lists',
       {
-        ...params,
+        params: {
+          ...params,
+        },
         headers: {
           Authorization: `Bearer ${token}`,
         },
