@@ -1,12 +1,26 @@
 import { tasksRepository } from '../repositories/tasksRepository';
-import { useApi, useOptimisticMutation, usePrefetch } from './useApi';
+import {
+  useApi,
+  useGenericMutation,
+  useOptimisticMutation,
+  usePrefetch,
+} from './useApi';
 
 import type { Task } from '../types/tasks';
 
 export const useTasksApi = () => {
   const useFetchTaskLists = (maxResults?: number) =>
-    useApi(['taskLists', { maxResults }], async ({ maxResults }, token) =>
-      tasksRepository.getTaskLists({ maxResults }, token),
+    useApi(
+      ['taskLists', { maxResults }],
+      async ({ maxResults }, token) =>
+        tasksRepository.getTaskLists({ maxResults }, token),
+      // {
+      //   select: ({ data }) =>
+      //     data.map((taskList) => ({
+      //       id: taskList.id,
+      //       title: taskList.title,
+      //     })),
+      // },
     );
 
   const useFetchTaskList = (taskListId: string) =>
@@ -16,6 +30,12 @@ export const useTasksApi = () => {
         tasksRepository.getTasks({ taskListId }, token),
       {
         enabled: !!taskListId,
+        // select: (data) =>
+        //   data.map((task) => ({
+        //     id: task.id,
+        //     title: task.title,
+        //     status: task.status,
+        //   })),
       },
     );
 
@@ -34,6 +54,12 @@ export const useTasksApi = () => {
       async (params, token) =>
         tasksRepository.createTask({ ...params, taskListId }, token),
       (oldData, newData) => [newData, ...oldData],
+    );
+
+  const useGenericAddTask = (taskListId: string) =>
+    useGenericMutation<Pick<Task, 'title'>, Task, Task[]>(
+      async (params, token) =>
+        tasksRepository.createTask({ ...params, taskListId }, token),
     );
 
   const useUpdateTask = (taskListId: string) =>
@@ -72,6 +98,7 @@ export const useTasksApi = () => {
     useFetchTaskList,
     useFetchTask,
     useAddTask,
+    useGenericAddTask,
     useUpdateTask,
     useDeleteTask,
     usePrefetchTask,
