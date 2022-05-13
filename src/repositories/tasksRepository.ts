@@ -54,7 +54,9 @@ export const tasksRepository: TasksRepository = {
     const response = await api.get<TaskListsResponse>(
       'https://tasks.googleapis.com/tasks/v1/users/@me/lists',
       {
-        ...params,
+        params: {
+          ...params,
+        },
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -67,7 +69,9 @@ export const tasksRepository: TasksRepository = {
     const response = await api.get<TasksResponse>(
       `https://tasks.googleapis.com/tasks/v1/lists/${params.taskListId}/tasks?showCompleted=true&showHidden=true`,
       {
-        ...params,
+        params: {
+          ...params,
+        },
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -80,7 +84,9 @@ export const tasksRepository: TasksRepository = {
     const response = await api.get<Task>(
       `https://tasks.googleapis.com/tasks/v1/lists/${params.taskListId}/tasks/${params.taskId}`,
       {
-        ...params,
+        params: {
+          ...params,
+        },
         headers: {
           Authorization: `Bearer ${token}`,
         },
