@@ -1,8 +1,11 @@
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useAuthGuardContext } from '../providers/AuthGuard';
 
-import type { UseQueryOptions, UseMutationOptions } from 'react-query';
+import type {
+  UseQueryOptions,
+  UseMutationOptions,
+} from '@tanstack/react-query';
 
 export const useApi = <
   TQueryKey extends [string, Record<string, unknown>?],

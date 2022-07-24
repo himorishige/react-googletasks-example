@@ -1,5 +1,5 @@
 import { showNotification } from '@mantine/notifications';
-import { QueryClient } from 'react-query';
+import { QueryClient } from '@tanstack/react-query';
 
 function queryErrorHandler(error: unknown): void {
   // error is type unknown because in js, anything can be an error (e.g. throw(5))
