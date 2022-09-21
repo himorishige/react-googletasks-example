@@ -8,7 +8,7 @@ import type {
 } from '@tanstack/react-query';
 
 export const useApi = <
-  TQueryKey extends [string, Record<string, unknown>?],
+  TQueryKey extends [string, (Record<string, unknown> | string)?],
   TQueryFnData,
   TError,
   TData = TQueryFnData,
